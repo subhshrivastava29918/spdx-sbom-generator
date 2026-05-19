@@ -8,7 +8,7 @@ BRANCH := $(shell sh -c 'git rev-parse --abbrev-ref HEAD')
 COMMIT := $(shell sh -c 'git rev-parse --short HEAD')
 GO_FILES=$(shell find . -type f -name '*.go' -not -path './vendor/*')
 PKG_LIST := $(shell go list ./... | grep -v mock)
-LDFLAGS=-ldflags "-s -w -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.branch=$(BRANCH) -X main.buildDate=$(BUILD_TIME)"
+LD-FLAGS=-ldflags "-s -w -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.branch=$(BRANCH) -X main.buildDate=$(BUILD_TIME)"
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 LINT_TOOL=$(shell go env GOPATH)/bin/golangci-lint
@@ -29,7 +29,7 @@ mod:
 .PHONY: generator
 generate: mod
 	@echo "Running cli on version: $(VERSION)"
-	@GO111MODULE=on GLFLAGs=-mod-vendor go run cmd/generator/generator.go $(ARGS)
+	@GO111MODULE=on GOFLAGS=-mod=vendor go run cmd/generator/generator.go $(ARGS)
 
 .PHONY: build
 build: mod
